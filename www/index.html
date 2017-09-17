@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BeagleBone Temperature Server</title>
+</head>
+<body>
+
+        <h1>BeagleTemp, the home temperature web server</h1>
+        <p id="demo">
+		<button type="button" onclick="temp()">Get Actual temperature</button>
+	</p>
+
+	
+	<h2>Chart of last day's temperature</h2>
+	<p id ="png">	
+	
+		<img src="temperature.png" style="width:500px;height:500px;">
+	</p>
+
+	<script>
+		function temp()
+		{
+			var xhttp = new XMLHttpRequest();
+  			xhttp.onreadystatechange = function() {
+    			if (this.readyState == 4 && this.status == 200) {
+    				 document.getElementById("demo").innerHTML = this.responseText;
+    			}
+  			};
+			xhttp.open("GET", "request.txt", true)
+  			xhttp.send();
+		}
+	</script>
+
+</body>
+</html> 
