@@ -12,16 +12,19 @@ GridLed=numpy.array(['P8_8','P8_7','P8_10','P8_9','P8_12','P8_14','P8_15','P8_17
 #
 
 def GPIOSetup():
+	"""Setting Up all LEDs as GPIO output"""
 	for x in range(0, 9):
 		GPIO.setup(GridLed[x], GPIO.OUT)
 
 def GPIOTurnOff():
+	"""All LEDs turned off"""
 	for x in range(0,9):
 		GPIO.output(GridLed[x], GPIO.LOW)
 	time.sleep(2)
 
 
 def TempCalc():
+	"""Define and print temperature from sensor"""
 	#GPIOTurnOff()
 	ADC.setup()
 	TEMP=(ADC.read(tempsensor) * 1800 - 500) / 10
@@ -30,6 +33,7 @@ def TempCalc():
 	return TEMP
 
 def Thermometer():
+	"""Considering the value of TMP sensor, turn on LEDs or not"""
 	TEMP=TempCalc()
 	if TEMP <= 10:
 		GPIO.output(GridLed[0], GPIO.HIGH)
@@ -75,6 +79,7 @@ def Thermometer():
 			GPIO.output(GridLed[x], GPIO.HIGH)
 
 def TempLogging():
+	"""Log all temperature every half hour, in TempLog.log"""
 	#GPIOTurnOff()
 	TEMP=TempCalc()
 	date=time.strftime("%a %b  %-d %H:%M:%S CEST %Y")
@@ -100,6 +105,7 @@ def TempLogging():
 
 
 def DateCalc():
+	"""define if now() is between xx:28 and xx:31. If so, log it"""
 	now=datetime.datetime.now()
 	LogUPtimehalf=now.replace(minute=31)
 	LogDOWNtimehalf=now.replace(minute=28)
@@ -109,6 +115,7 @@ def DateCalc():
 		TempLogging()
 
 def webServerRequest():
+	"""WebServer takes its info from this request file"""
 	TEMP=TempCalc()
 	F=open("/var/www/request.txt",'w')
 	F.write("date :\t")
@@ -122,6 +129,7 @@ def webServerRequest():
 
 
 if __name__ == '__main__':
+	"""Infinite loop calculating temp and assigning LEDs every two minutes"""
 	while True:
 		GPIOSetup()
 		Thermometer()
